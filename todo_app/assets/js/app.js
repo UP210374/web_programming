@@ -3,11 +3,9 @@ const userContainer = document.getElementById('user-container');
 const taskContainer = document.getElementById('task-container');
 const showTasksBtn = document.getElementById('show-tasks-btn');
 
-// Ocultar el contenedor de tareas y el botón de mostrar tareas al cargar la página
 taskContainer.style.display = 'none';
 showTasksBtn.style.display = 'none';
 
-// Cargar usuarios al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
   getAllUsers()
     .then(users => {
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Agregar evento 'change' al elemento 'userSelect'
 userSelect.addEventListener('change', () => {
   const selectedUserId = parseInt(userSelect.value);
   getAllUsers()
@@ -33,11 +30,10 @@ userSelect.addEventListener('change', () => {
         <h3>Información del usuario seleccionado</h3>
         <ul>
           <li>Nombre completo: ${selectedUser.firstname} ${selectedUser.lastname}</li>
-          <li>Email: ${selectedUser.email}</li>
+          <li>Email: ${selectedUser.correo}</li>
         </ul>
       `;
       showTasksBtn.style.display = 'block';
-      // Ocultar el contenedor de tareas al seleccionar un nuevo usuario
       taskContainer.style.display = 'none';
     })
     .catch(error => {
@@ -45,24 +41,22 @@ userSelect.addEventListener('change', () => {
     });
 });
 
-// Agregar evento 'click' al botón para mostrar las tareas
 showTasksBtn.addEventListener('click', () => {
   const selectedUserId = parseInt(userSelect.value);
   getAllTasks()
-    .then(tasks => {
-      const userTasks = tasks.filter(task => task.userId === selectedUserId);
+    .then(tasklist => {
+      const userTasks = tasklist.filter(tasklist => tasklist.idUser === selectedUserId);
       taskContainer.innerHTML = `
         <h3>Lista de tareas del usuario</h3>
         <ul>
-          ${userTasks.map(task => `
+          ${userTasks.map(tasklist => `
             <li>
-              <span>${task.title}</span>
-              <input type="checkbox" ${task.completed ? 'checked' : ''}>
+              <span>${tasklist.title}</span>
+              <input type="checkbox" ${tasklist.compleTED ? 'checked' : ''}>
             </li>
           `).join('')}
         </ul>
       `;
-      // Mostrar el contenedor de tareas al hacer clic en el botón
       taskContainer.style.display = 'block';
     })
     .catch(error => {
@@ -75,7 +69,7 @@ showTasksBtn.addEventListener('click', () => {
  * @returns {Promise<User[]>}
  */
 function getAllUsers() {
-  return fetch('/data/usuarios.json')
+  return fetch('http://localhost:5000/connection.php')
     .then(resp => resp.json());
 }
 
@@ -84,6 +78,6 @@ function getAllUsers() {
  * @returns {Promise<Task[]>}
  */
 function getAllTasks() {
-  return fetch('/data/tareas.json') // Cambiar la ruta al archivo de tareas
+  return fetch('http://localhost:5500/tasks.php') // Cambiar la ruta al archivo de tareas
     .then(resp => resp.json());
 }
